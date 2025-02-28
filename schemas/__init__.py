@@ -1,144 +1,155 @@
 from ariadne import gql
+from .owner import owner_type_defs
+from .vendor import vendor_type_defs
+from .product import product_type_defs
+from .log import log_type_defs
+from .user_interaction import user_interaction_type_defs
+from .category import category_type_defs
 
-type_defs = gql("""
-    type Vendor {
-        id: ID!
-        username: String!
-        name: String!
-        owner_id: ID!
-        logo_urls: [String!]!
-        banner_urls: [String!]!
-        bios: [String!]!
-        about_us: [String!]!
-        followers_count: Int!
-        following_count: Int!
-        branches: [Branch!]!
-        business_details: [BusinessDetail!]!
-        visibility: Boolean!
-        attached_vendors: [ID!]!
-        blocked_vendors: [ID!]!
-        account_types: [String!]!
-        social_links: [SocialLink!]!
-        messenger_links: [MessengerLink!]!
-        created_by: ID!
-        created_at: String!
-        updated_by: ID!
-        updated_at: String!
+type_defs = gql(
+    owner_type_defs +
+    vendor_type_defs +
+    product_type_defs +
+    log_type_defs +
+    user_interaction_type_defs +
+    category_type_defs +
+    """
+    type Query {
+        myVendorProfile: Vendor
+        vendorProfile(vendorId: ID!): Vendor
+        products(vendorId: ID!): [Product!]
+        searchVendors(username: String): [Vendor!]
+        searchProducts(name: String): [Product!]
+        logs(modelType: String!, modelId: ID!): [Log]
+        interactions(userId: ID!): [UserInteraction!]
+        owner(ownerId: ID!): Owner
+        categories: [Category!]
+        subcategories(categoryId: ID!): [Subcategory!]
     }
 
-    type Branch {
-        label: String!
-        city: String!
-        province: String!
-        address: String!
-        location: Location!
-        phones: [String!]!
-        emails: [String!]!
+    type Mutation {
+        createOwner(firstName: String!, lastName: String!, phone: String!): Owner!
+        updateOwner(
+            ownerId: ID!
+            firstName: String
+            lastName: String
+            phone: String
+            bio: String
+            avatarUrls: [String!]
+            phones: [String!]
+            birthdate: String
+            gender: String
+            languages: [String!]
+        ): Owner!
+        deleteOwner(ownerId: ID!): Owner
+        createVendor(
+            username: String!
+            name: String!
+            ownerName: String!
+            ownerPhone: String!
+            address: String!
+            location: LocationInput!
+            city: String!
+            province: String!
+            categoryIds: [ID!]!
+        ): Vendor!
+        updateVendor(
+            vendorId: ID!
+            name: String
+            logoUrls: [String!]
+            bannerUrls: [String!]
+            bios: [String!]
+            aboutUs: [String!]
+            branches: [BranchInput!]
+            businessDetails: [BusinessDetailInput!]
+            visibility: Boolean
+            attachedVendors: [ID!]
+            blockedVendors: [ID!]
+            accountTypes: [String!]
+            socialLinks: [SocialLinkInput!]
+            messengerLinks: [MessengerLinkInput!]
+        ): Vendor!
+        deleteVendor(vendorId: ID!): Vendor
+        createProduct(vendorId: ID!, name: String!, categoryIds: [ID!]!): Product!
+        updateProduct(
+            productId: ID!
+            name: String
+            shortDescriptions: [String!]
+            prices: [PriceInput!]
+            colors: [ColorInput!]
+            images: [ImageInput!]
+            videoUrls: [String!]
+            audioFiles: [AudioFileInput!]
+            technicalSpecs: [SpecInput!]
+            tags: [String!]
+            thumbnailUrls: [String!]
+            suggestedProducts: [ID!]
+            status: String
+            qrCodeUrl: String
+            categoryIds: [ID!]
+            subcategoryIds: [ID!]
+        ): Product!
+        deleteProduct(productId: ID!): Product
+        trackInteraction(targetType: String!, targetId: ID!, action: String!): UserInteraction!
+        createCategory(name: String!): Category!
+        createSubcategory(categoryId: ID!, name: String!): Subcategory!
     }
 
-    type Location {
+    input LocationInput {
         lat: Float!
         lng: Float!
     }
 
-    type BusinessDetail {
+    input BranchInput {
+        label: String!
+        city: String!
+        province: String!
+        address: String!
+        location: LocationInput!
+        phones: [String!]!
+        emails: [String!]!
+    }
+
+    input BusinessDetailInput {
         type: String!
         values: [String!]!
     }
 
-    type SocialLink {
+    input SocialLinkInput {
         platform: String!
         url: String!
     }
 
-    type MessengerLink {
+    input MessengerLinkInput {
         platform: String!
         url: String!
     }
 
-    type Product {
-        id: ID!
-        vendor_id: ID!
-        names: [String!]!
-        short_descriptions: [String!]!
-        prices: [Price!]!
-        colors: [Color!]!
-        images: [Image!]!
-        video_urls: [String!]!
-        audio_files: [AudioFile!]!
-        technical_specs: [Spec!]!
-        tags: [String!]!
-        thumbnail_urls: [String!]!
-        suggested_products: [ID!]!
-        status: String!
-        qr_code_url: String!
-        category_ids: [ID!]!
-        subcategory_ids: [ID!]!
-        created_by: ID!
-        created_at: String!
-        updated_by: ID!
-        updated_at: String!
-    }
-
-    type Price {
+    input PriceInput {
         type: String!
         amount: Float!
         currency: String!
     }
 
-    type Color {
+    input ColorInput {
         name: String!
         hex: String!
     }
 
-    type Image {
+    input ImageInput {
         url: String!
         related_colors: [String!]!
         textures: [String!]!
     }
 
-    type AudioFile {
+    input AudioFileInput {
         url: String!
         label: String!
     }
 
-    type Spec {
+    input SpecInput {
         key: String!
         value: String!
     }
-
-    type Log {
-        id: ID!
-        model_type: String!
-        model_id: ID!
-        action: String!
-        changed_by: ID!
-        changed_at: String!
-        previous_data: String
-        new_data: String!
-    }
-
-    type UserInteraction {
-        id: ID!
-        user_id: ID!
-        target_type: String!
-        target_id: ID!
-        action: String!
-        timestamp: String!
-        details: String
-    }
-
-    type Query {
-        myVendorProfile: Vendor
-        vendorProfile(vendorId: ID!): Vendor
-        products(vendorId: ID!): [Product!]
-        logs(modelType: String!, modelId: ID!): [Log] 
-        interactions(userId: ID!): [UserInteraction!]
-    }
-
-    type Mutation {
-        createVendor(username: String!, name: String!, ownerId: ID!): Vendor!
-        createProduct(vendorId: ID!, name: String!): Product!
-        trackInteraction(targetType: String!, targetId: ID!, action: String!): UserInteraction!
-    }
-""")
+    """
+)
