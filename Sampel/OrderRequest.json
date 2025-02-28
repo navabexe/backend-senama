@@ -1,0 +1,14 @@
+{
+    "_id": "66f1a2b3c8d9e4f2b8c7d5e1",
+    "vendor_id": "66f1a2b3c8d9e4f2b8c7d5a1",
+    "product_id": "66f1a2b3c8d9e4f2b8c7d5b1",
+    "customer_info": {
+        "name": "علی حسینی",
+        "phone": "09351234567"
+    },
+    "quantity": 1,
+    "note": "لطفاً با بسته‌بندی خاص ارسال کنید",
+    "status": "new",
+    "rejection_reason": null,
+    "created_at": "2025-02-28T14:00:00Z"
+}
