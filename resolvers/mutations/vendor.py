@@ -7,10 +7,8 @@ from utils import json_serialize
 
 mutation = MutationType()
 
-
 @mutation.field("createVendor")
-async def resolve_create_vendor(_, info, username, name, ownerName, ownerPhone, address, location, city, province,
-                                businessCategoryIds):
+async def resolve_create_vendor(_, info, username, name, ownerName, ownerPhone, address, location, city, province, businessCategoryIds):
     db = get_db()
     fake_owner_id = "66f1a2b3c8d9e4f2b8c7d590"  # فعلاً فیک
 
@@ -58,7 +56,6 @@ async def resolve_create_vendor(_, info, username, name, ownerName, ownerPhone, 
     vendor_dict = vendor.__dict__
     vendor_dict["id"] = vendor_id
     return vendor_dict
-
 
 @mutation.field("updateVendor")
 async def resolve_update_vendor(_, info, vendorId, name=None, logoUrls=None, bannerUrls=None, bios=None, aboutUs=None,
@@ -121,7 +118,6 @@ async def resolve_update_vendor(_, info, vendorId, name=None, logoUrls=None, ban
     vendor["id"] = str(vendor["_id"])
     del vendor["_id"]
     return vendor
-
 
 @mutation.field("deleteVendor")
 async def resolve_delete_vendor(_, info, vendorId):

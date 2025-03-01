@@ -3,11 +3,9 @@ from db import get_db
 from models.product import Product
 from datetime import datetime, UTC
 from bson import ObjectId
-
 from utils import json_serialize
 
 mutation = MutationType()
-
 
 @mutation.field("createProduct")
 async def resolve_create_product(_, info, vendorId, name, categoryIds):
@@ -31,7 +29,7 @@ async def resolve_create_product(_, info, vendorId, name, categoryIds):
 
     product = Product(
         vendor_id=vendorId,
-        names=[name],  # تغییر name به names
+        names=[name],
         short_descriptions=[],
         prices=[],
         colors=[],
@@ -44,7 +42,7 @@ async def resolve_create_product(_, info, vendorId, name, categoryIds):
         suggested_products=[],
         status="draft",
         qr_code_url=f"https://example.com/product/{vendorId}/{name}/qr",
-        category_ids=categoryIds,  # اجباری کردن category_ids
+        category_ids=categoryIds,
         subcategory_ids=[],
         created_by=vendorId,
         created_at=datetime.now(UTC).isoformat(),
@@ -54,6 +52,7 @@ async def resolve_create_product(_, info, vendorId, name, categoryIds):
     result = db.products.insert_one(product.dict())
     product_id = str(result.inserted_id)
     product.id = product_id
+
     from models.log import Log
     log = Log(
         model_type="Product",
@@ -66,10 +65,10 @@ async def resolve_create_product(_, info, vendorId, name, categoryIds):
     log_result = db.logs.insert_one(log.dict())
     log.id = str(log_result.inserted_id)
     db.logs.update_one({"_id": log_result.inserted_id}, {"$set": {"id": log.id}})
+
     product_dict = product.__dict__
     product_dict["id"] = product_id
     return product_dict
-
 
 @mutation.field("updateProduct")
 async def resolve_update_product(_, info, productId, name=None, shortDescriptions=None, prices=None, colors=None,
@@ -87,7 +86,7 @@ async def resolve_update_product(_, info, productId, name=None, shortDescription
 
     old_data = product.copy()
     if name is not None:
-        product["names"] = [name]  # تغییر name به names
+        product["names"] = [name]
     if shortDescriptions is not None:
         product["short_descriptions"] = shortDescriptions
     if prices is not None:
@@ -119,6 +118,7 @@ async def resolve_update_product(_, info, productId, name=None, shortDescription
     product["updated_at"] = datetime.now(UTC).isoformat()
 
     db.products.update_one({"_id": product_id_obj}, {"$set": product})
+
     from models.log import Log
     log = Log(
         model_type="Product",
@@ -132,10 +132,10 @@ async def resolve_update_product(_, info, productId, name=None, shortDescription
     log_result = db.logs.insert_one(log.dict())
     log.id = str(log_result.inserted_id)
     db.logs.update_one({"_id": log_result.inserted_id}, {"$set": {"id": log.id}})
+
     product["id"] = str(product["_id"])
     del product["_id"]
     return product
-
 
 @mutation.field("deleteProduct")
 async def resolve_delete_product(_, info, productId):
@@ -150,6 +150,7 @@ async def resolve_delete_product(_, info, productId):
 
     old_data = product.copy()
     db.products.delete_one({"_id": product_id_obj})
+
     from models.log import Log
     log = Log(
         model_type="Product",
@@ -163,6 +164,7 @@ async def resolve_delete_product(_, info, productId):
     log_result = db.logs.insert_one(log.dict())
     log.id = str(log_result.inserted_id)
     db.logs.update_one({"_id": log_result.inserted_id}, {"$set": {"id": log.id}})
+
     old_data["id"] = str(old_data["_id"])
     del old_data["_id"]
     return old_data

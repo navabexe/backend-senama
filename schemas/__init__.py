@@ -1,11 +1,11 @@
 from ariadne import gql
 from .owner import owner_type_defs
-from .story import story_type_defs
 from .vendor import vendor_type_defs
 from .product import product_type_defs
 from .log import log_type_defs
 from .user_interaction import user_interaction_type_defs
 from .category import category_type_defs
+from .story import story_type_defs
 from .business_category import business_category_type_defs
 from .follow_block import follow_block_type_defs
 
@@ -24,8 +24,8 @@ type_defs = gql(
         myVendorProfile: Vendor
         vendorProfile(vendorId: ID!): Vendor
         products(vendorId: ID!): [Product!]
-        searchVendors(username: String): [Vendor!]
-        searchProducts(name: String): [Product!]
+        searchVendors(username: String, name: String, city: String, province: String, businessCategoryId: ID): [Vendor!]
+        searchProducts(name: String, tag: String, categoryId: ID, status: String): [Product!]
         logs(modelType: String!, modelId: ID!): [Log]
         interactions(userId: ID!): [UserInteraction!]
         owner(ownerId: ID!): Owner
