@@ -17,7 +17,7 @@ class Product(BaseModel):
     suggested_products: List[str] = Field(default_factory=list)
     status: str
     qr_code_url: str
-    category_ids: List[str] = Field(default_factory=list)
+    category_ids: List[str]
     subcategory_ids: List[str] = Field(default_factory=list)
     created_by: str
     created_at: str

@@ -1,10 +1,13 @@
 from ariadne import gql
 from .owner import owner_type_defs
+from .story import story_type_defs
 from .vendor import vendor_type_defs
 from .product import product_type_defs
 from .log import log_type_defs
 from .user_interaction import user_interaction_type_defs
 from .category import category_type_defs
+from .business_category import business_category_type_defs
+from .follow_block import follow_block_type_defs
 
 type_defs = gql(
     owner_type_defs +
@@ -13,6 +16,9 @@ type_defs = gql(
     log_type_defs +
     user_interaction_type_defs +
     category_type_defs +
+    story_type_defs +
+    business_category_type_defs +
+    follow_block_type_defs +
     """
     type Query {
         myVendorProfile: Vendor
@@ -25,6 +31,10 @@ type_defs = gql(
         owner(ownerId: ID!): Owner
         categories: [Category!]
         subcategories(categoryId: ID!): [Subcategory!]
+        businessCategories: [BusinessCategory!]
+        stories(vendorId: ID!): [Story!]
+        follows(followerId: ID!): [FollowBlock!]
+        blocks(followerId: ID!): [FollowBlock!]
     }
 
     type Mutation {
@@ -51,7 +61,7 @@ type_defs = gql(
             location: LocationInput!
             city: String!
             province: String!
-            categoryIds: [ID!]!
+            businessCategoryIds: [ID!]!
         ): Vendor!
         updateVendor(
             vendorId: ID!
@@ -93,6 +103,17 @@ type_defs = gql(
         trackInteraction(targetType: String!, targetId: ID!, action: String!): UserInteraction!
         createCategory(name: String!): Category!
         createSubcategory(categoryId: ID!, name: String!): Subcategory!
+        createBusinessCategory(name: String!): BusinessCategory!
+        createStory(vendorId: ID!, mediaUrl: String!): Story!
+        updateStory(
+            storyId: ID!
+            description: String
+            link: String
+            tags: [String!]
+        ): Story!
+        deleteStory(storyId: ID!): Story
+        createFollowBlock(followerId: ID!, followingId: ID!, action: String!): FollowBlock!
+        deleteFollowBlock(followBlockId: ID!): FollowBlock
     }
 
     input LocationInput {

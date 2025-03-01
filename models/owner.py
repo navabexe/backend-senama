@@ -5,7 +5,7 @@ class Owner(BaseModel):
     id: Optional[str] = None
     first_name: str
     last_name: str
-    phone: str  # اضافه کردن شماره همراه به‌عنوان فیلد اجباری
+    phone: str
     bio: Optional[str] = None
     avatar_urls: List[str] = Field(default_factory=list)
     phones: List[str] = Field(default_factory=list)

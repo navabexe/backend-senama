@@ -14,7 +14,7 @@ async def resolve_categories(_, info):
         for category in categories:
             category_dict = {
                 "id": str(category["_id"]),
-                "name": category.get("name", ""),  # مطمئن می‌شیم name همیشه مقدار داره
+                "name": category.get("name", ""),
                 "created_at": category.get("created_at", ""),
                 "updated_at": category.get("updated_at", "")
             }

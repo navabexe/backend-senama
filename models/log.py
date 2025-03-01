@@ -1,4 +1,4 @@
-from pydantic.v1 import BaseModel
+from pydantic.v1 import BaseModel, Field
 from typing import Optional
 
 class Log(BaseModel):
@@ -8,5 +8,5 @@ class Log(BaseModel):
     action: str
     changed_by: str
     changed_at: str
-    previous_data: Optional[str] = None
-    new_data: str
+    previous_data: str = ""
+    new_data: str = ""

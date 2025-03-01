@@ -11,7 +11,7 @@ vendor_type_defs = gql("""
         location: Location!
         city: String!
         province: String!
-        category_ids: [ID!]!
+        business_category_ids: [ID!]!
         logo_urls: [String!]!
         banner_urls: [String!]!
         bios: [String!]!

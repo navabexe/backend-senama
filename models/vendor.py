@@ -11,7 +11,7 @@ class Vendor(BaseModel):
     location: Dict[str, float]
     city: str
     province: str
-    category_ids: List[str]  # اضافه کردن دسته‌بندی اجباری
+    business_category_ids: List[str]
     logo_urls: List[str] = Field(default_factory=list)
     banner_urls: List[str] = Field(default_factory=list)
     bios: List[str] = Field(default_factory=list)

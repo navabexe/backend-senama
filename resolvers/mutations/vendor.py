@@ -3,7 +3,6 @@ from db import get_db
 from models.vendor import Vendor
 from datetime import datetime, UTC
 from bson import ObjectId
-
 from utils import json_serialize
 
 mutation = MutationType()
@@ -11,18 +10,18 @@ mutation = MutationType()
 
 @mutation.field("createVendor")
 async def resolve_create_vendor(_, info, username, name, ownerName, ownerPhone, address, location, city, province,
-                                categoryIds):
+                                businessCategoryIds):
     db = get_db()
     fake_owner_id = "66f1a2b3c8d9e4f2b8c7d590"  # فعلاً فیک
 
-    # چک کردن وجود دسته‌بندی‌ها
+    # چک کردن وجود دسته‌بندی‌های کسب‌وکار
     try:
-        category_ids_obj = [ObjectId(cid) for cid in categoryIds]
-        for cid in category_ids_obj:
-            if not db.categories.find_one({"_id": cid}):
-                raise ValueError(f"Category with ID {cid} not found")
+        business_category_ids_obj = [ObjectId(cid) for cid in businessCategoryIds]
+        for cid in business_category_ids_obj:
+            if not db.business_categories.find_one({"_id": cid}):
+                raise ValueError(f"Business Category with ID {cid} not found")
     except ValueError as e:
-        raise ValueError(f"Invalid categoryIds format or category not found: {str(e)}")
+        raise ValueError(f"Invalid businessCategoryIds format or category not found: {str(e)}")
 
     vendor = Vendor(
         username=username,
@@ -33,7 +32,7 @@ async def resolve_create_vendor(_, info, username, name, ownerName, ownerPhone, 
         location=location,
         city=city,
         province=province,
-        category_ids=categoryIds,  # اجباری کردن category_ids
+        business_category_ids=businessCategoryIds,
         created_by=fake_owner_id,
         created_at=datetime.now(UTC).isoformat(),
         updated_by=fake_owner_id,
