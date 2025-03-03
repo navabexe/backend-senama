@@ -39,7 +39,7 @@ async def resolve_create_follow_block(_, info, followerId, followingId, action):
     follow_block.id = follow_block_id
 
     if action == "follow":
-        db.vendors.update_one({"_id": follower_id_obj}, {"$inc": {"following_count": 1}})
+        db.vendors.update_one({"_id": follower_id_obj}, {"$inc": {"following_count": 1}, "$push": {"attached_vendors": followingId}})
         db.vendors.update_one({"_id": following_id_obj}, {"$inc": {"followers_count": 1}})
     elif action == "block":
         db.vendors.update_one({"_id": follower_id_obj}, {"$push": {"blocked_vendors": followingId}})
@@ -64,25 +64,21 @@ async def resolve_create_follow_block(_, info, followerId, followingId, action):
 @mutation.field("deleteFollowBlock")
 async def resolve_delete_follow_block(_, info, followBlockId):
     db = get_db()
-    print(f"Attempting to delete follow_block with ID: {followBlockId}")  # دیباگ
     try:
         follow_block_id_obj = ObjectId(followBlockId)
         follow_block = db.follow_blocks.find_one({"_id": follow_block_id_obj})
-        print(f"Found follow_block: {follow_block}")  # دیباگ
         if not follow_block:
             raise ValueError(f"FollowBlock with ID {followBlockId} not found")
-    except ValueError as e:
-        print(f"Error: {str(e)}")  # دیباگ
-        raise ValueError(f"Invalid followBlockId format or not found: {followBlockId}")
+    except ValueError:
+        raise ValueError(f"Invalid followBlockId format: {followBlockId}")
 
     old_data = follow_block.copy()
-    result = db.follow_blocks.delete_one({"_id": follow_block_id_obj})
-    print(f"Delete result: {result.deleted_count}")  # دیباگ
+    db.follow_blocks.delete_one({"_id": follow_block_id_obj})
 
     follower_id_obj = ObjectId(follow_block["follower_id"])
     following_id_obj = ObjectId(follow_block["following_id"])
     if follow_block["action"] == "follow":
-        db.vendors.update_one({"_id": follower_id_obj}, {"$inc": {"following_count": -1}})
+        db.vendors.update_one({"_id": follower_id_obj}, {"$inc": {"following_count": -1}, "$pull": {"attached_vendors": follow_block["following_id"]}})
         db.vendors.update_one({"_id": following_id_obj}, {"$inc": {"followers_count": -1}})
     elif follow_block["action"] == "block":
         db.vendors.update_one({"_id": follower_id_obj}, {"$pull": {"blocked_vendors": follow_block["following_id"]}})
@@ -103,5 +99,4 @@ async def resolve_delete_follow_block(_, info, followBlockId):
 
     old_data["id"] = str(old_data["_id"])
     del old_data["_id"]
-    print(f"Returning deleted follow_block: {old_data}")  # دیباگ
     return old_data

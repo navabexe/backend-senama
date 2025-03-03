@@ -1,5 +1,4 @@
 from ariadne import QueryType
-from .owner import resolve_owner
 from .vendor import resolve_my_vendor_profile, resolve_vendor_profile, resolve_search_vendors
 from .product import resolve_products, resolve_search_products
 from .log import resolve_logs
@@ -11,7 +10,6 @@ from .follow_block import resolve_follows, resolve_blocks
 
 query = QueryType()
 
-query.set_field("owner", resolve_owner)
 query.set_field("myVendorProfile", resolve_my_vendor_profile)
 query.set_field("vendorProfile", resolve_vendor_profile)
 query.set_field("searchVendors", resolve_search_vendors)

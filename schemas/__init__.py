@@ -1,5 +1,4 @@
 from ariadne import gql
-from .owner import owner_type_defs
 from .vendor import vendor_type_defs
 from .product import product_type_defs
 from .log import log_type_defs
@@ -10,7 +9,6 @@ from .business_category import business_category_type_defs
 from .follow_block import follow_block_type_defs
 
 type_defs = gql(
-    owner_type_defs +
     vendor_type_defs +
     product_type_defs +
     log_type_defs +
@@ -20,6 +18,64 @@ type_defs = gql(
     business_category_type_defs +
     follow_block_type_defs +
     """
+    type User {
+        id: ID!
+        first_name: String
+        last_name: String
+        phone: String!
+        password: String
+        roles: [String!]!
+        status: String
+        otp: String
+        otp_expires_at: String
+        bio: String
+        avatar_urls: [String!]
+        phones: [String!]
+        birthdate: String
+        gender: String
+        languages: [String!]
+        created_at: String!
+        updated_at: String!
+    }
+
+    type Session {
+        id: ID!
+        user_id: ID!
+        token: String!
+        expires_at: String!
+        created_at: String!
+    }
+
+    type Location {
+        lat: Float!
+        lng: Float!
+    }
+
+    type Branch {
+        label: String!
+        city: String!
+        province: String!
+        address: String!
+        location: Location!
+        phones: [String!]!
+        emails: [String!]!
+    }
+
+    type BusinessDetail {
+        type: String!
+        values: [String!]!
+    }
+
+    type SocialLink {
+        platform: String!
+        url: String!
+    }
+
+    type MessengerLink {
+        platform: String!
+        url: String!
+    }
+
     type Query {
         myVendorProfile: Vendor
         vendorProfile(vendorId: ID!): Vendor
@@ -28,7 +84,6 @@ type_defs = gql(
         searchProducts(name: String, tag: String, categoryId: ID, status: String): [Product!]
         logs(modelType: String!, modelId: ID!): [Log]
         interactions(userId: ID!): [UserInteraction!]
-        owner(ownerId: ID!): Owner
         categories: [Category!]
         subcategories(categoryId: ID!): [Subcategory!]
         businessCategories: [BusinessCategory!]
@@ -38,20 +93,11 @@ type_defs = gql(
     }
 
     type Mutation {
-        createOwner(firstName: String!, lastName: String!, phone: String!): Owner!
-        updateOwner(
-            ownerId: ID!
-            firstName: String
-            lastName: String
-            phone: String
-            bio: String
-            avatarUrls: [String!]
-            phones: [String!]
-            birthdate: String
-            gender: String
-            languages: [String!]
-        ): Owner!
-        deleteOwner(ownerId: ID!): Owner
+        createUser(phone: String!, firstName: String, lastName: String, password: String, roles: [String!], bio: String, avatarUrls: [String!], phones: [String!], birthdate: String, gender: String, languages: [String!]): UserCreationPayload!
+        verifyOtp(phone: String!, otp: String!): AuthPayload!
+        logoutUser: LogoutPayload!
+        activateUser(userId: ID!): ActivationPayload!
+        regenerateOtp(phone: String!): UserCreationPayload!
         createVendor(
             username: String!
             name: String!
@@ -80,6 +126,7 @@ type_defs = gql(
             messengerLinks: [MessengerLinkInput!]
         ): Vendor!
         deleteVendor(vendorId: ID!): Vendor
+        activateVendor(vendorId: ID!, vendorType: String): ActivationPayload!
         createProduct(vendorId: ID!, name: String!, categoryIds: [ID!]!): Product!
         updateProduct(
             productId: ID!
@@ -114,6 +161,25 @@ type_defs = gql(
         deleteStory(storyId: ID!): Story
         createFollowBlock(followerId: ID!, followingId: ID!, action: String!): FollowBlock!
         deleteFollowBlock(followBlockId: ID!): FollowBlock
+    }
+
+    type UserCreationPayload {
+        id: ID!
+        otp: String!
+    }
+
+    type AuthPayload {
+        access_token: String!
+        token_type: String!
+        user_id: ID!
+    }
+
+    type LogoutPayload {
+        message: String!
+    }
+
+    type ActivationPayload {
+        message: String!
     }
 
     input LocationInput {
