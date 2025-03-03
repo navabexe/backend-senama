@@ -1,71 +1,54 @@
-from ariadne import QueryType
-from db import get_db
+import re
 from bson import ObjectId
+from db import get_db
+from utils import get_current_user
 
-query = QueryType()
 
-
-@query.field("myVendorProfile")
 async def resolve_my_vendor_profile(_, info):
+    """Retrieve the profile of the vendor created by the current user."""
     db = get_db()
-    vendor = db.vendors.find_one({"username": "sara_mobl_test5"})
-    if vendor:
-        vendor["id"] = str(vendor["_id"])
-        del vendor["_id"]
-        owner = db.owners.find_one({"_id": ObjectId(vendor["created_by"])})  # تغییر owner_id به created_by
-        if owner:
-            owner["id"] = str(owner["_id"])
-            del owner["_id"]
-            vendor["owner"] = owner
-        return vendor
-    return None
-
-
-@query.field("vendorProfile")
-async def resolve_vendor_profile(_, info, vendorId):
-    db = get_db()
-    try:
-        vendor_id_obj = ObjectId(vendorId)
-        vendor = db.vendors.find_one({"_id": vendor_id_obj})
-        if not vendor:
-            return None
-    except ValueError:
-        raise ValueError(f"Invalid vendorId format: {vendorId}")
-
+    user_id = get_current_user(info, db)
+    vendor = db.vendors.find_one({"created_by": user_id})
+    if not vendor:
+        return None
     vendor["id"] = str(vendor["_id"])
     del vendor["_id"]
-    owner = db.owners.find_one({"_id": ObjectId(vendor["created_by"])})  # تغییر owner_id به created_by
-    if owner:
-        owner["id"] = str(owner["_id"])
-        del owner["_id"]
-        vendor["owner"] = owner
     return vendor
 
 
-@query.field("searchVendors")
+async def resolve_vendor_profile(_, info, vendorId):
+    """Retrieve the profile of a specific vendor by ID."""
+    db = get_db()
+    try:
+        vendor_id_obj = ObjectId(vendorId)
+    except ValueError:
+        raise ValueError(f"Invalid vendorId format: {vendorId}")
+
+    vendor = db.vendors.find_one({"_id": vendor_id_obj})
+    if not vendor:
+        raise ValueError(f"Vendor with ID {vendorId} not found")
+    vendor["id"] = str(vendor["_id"])
+    del vendor["_id"]
+    return vendor
+
+
 async def resolve_search_vendors(_, info, username=None, name=None, city=None, province=None, businessCategoryId=None):
+    """Search vendors based on filters like username, name, city, province, or business category."""
     db = get_db()
     query = {}
     if username:
-        query["username"] = {"$regex": username, "$options": "i"}
+        query["username"] = {"$regex": re.escape(username), "$options": "i"}
     if name:
-        query["name"] = {"$regex": name, "$options": "i"}
+        query["name"] = {"$regex": re.escape(name), "$options": "i"}
     if city:
         query["city"] = city
     if province:
         query["province"] = province
     if businessCategoryId:
-        query["business_category_ids"] = businessCategoryId
+        try:
+            query["business_category_ids"] = ObjectId(businessCategoryId)
+        except ValueError:
+            raise ValueError(f"Invalid businessCategoryId: {businessCategoryId}")
 
-    vendors = list(db.vendors.find(query))
-    result = []
-    for vendor in vendors:
-        vendor["id"] = str(vendor["_id"])
-        del vendor["_id"]
-        owner = db.owners.find_one({"_id": ObjectId(vendor["created_by"])})  # تغییر owner_id به created_by
-        if owner:
-            owner["id"] = str(owner["_id"])
-            del owner["_id"]
-            vendor["owner"] = owner
-        result.append(vendor)
-    return result
+    vendors = db.vendors.find(query).limit(50)
+    return [{"id": str(v["_id"]), **{k: v for k, v in v.items() if k != "_id"}} for v in vendors]

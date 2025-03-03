@@ -1,54 +1,53 @@
-from ariadne import gql
+from pydantic.v1 import BaseModel, Field
+from typing import List, Optional
+from datetime import datetime
 
-product_type_defs = gql("""
-    type Product {
-        id: ID!
-        vendor_id: ID!
-        names: [String!]!
-        short_descriptions: [String!]!
-        prices: [Price!]!
-        colors: [Color!]!
-        images: [Image!]!
-        video_urls: [String!]!
-        audio_files: [AudioFile!]!
-        technical_specs: [Spec!]!
-        tags: [String!]!
-        thumbnail_urls: [String!]!
-        suggested_products: [ID!]!
-        status: String!
-        qr_code_url: String!
-        category_ids: [ID!]!
-        subcategory_ids: [ID!]!
-        created_by: ID!
-        created_at: String!
-        updated_by: ID!
-        updated_at: String!
-    }
+class Price(BaseModel):
+    type: str
+    amount: float
+    currency: str
 
-    type Price {
-        type: String!
-        amount: Float!
-        currency: String!
-    }
+class Color(BaseModel):
+    name: str
+    hex: str
 
-    type Color {
-        name: String!
-        hex: String!
-    }
+class Image(BaseModel):
+    url: str
+    related_colors: List[str]
+    textures: List[str]
 
-    type Image {
-        url: String!
-        related_colors: [String!]!
-        textures: [String!]!
-    }
+class AudioFile(BaseModel):
+    url: str
+    label: str
 
-    type AudioFile {
-        url: String!
-        label: String!
-    }
+class Spec(BaseModel):
+    key: str
+    value: str
 
-    type Spec {
-        key: String!
-        value: String!
-    }
-""")
+class ProductCreate(BaseModel):
+    vendor_id: str
+    name: str
+    category_ids: List[str]
+
+class ProductResponse(BaseModel):
+    id: str
+    vendor_id: str
+    names: List[str]
+    short_descriptions: List[str]
+    prices: List[Price]
+    colors: List[Color]
+    images: List[Image]
+    video_urls: List[str]
+    audio_files: List[AudioFile]
+    technical_specs: List[Spec]
+    tags: List[str]
+    thumbnail_urls: List[str]
+    suggested_products: List[str]
+    status: str
+    qr_code_url: Optional[str]
+    category_ids: List[str]
+    subcategory_ids: List[str]
+    created_by: str
+    created_at: datetime
+    updated_by: str
+    updated_at: datetime

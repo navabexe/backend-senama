@@ -1,21 +1,22 @@
 from pydantic.v1 import BaseModel, Field
 from typing import List, Optional
+from datetime import datetime, UTC
 
 class User(BaseModel):
     id: Optional[str] = None
+    phone: str
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    phone: str
     password: Optional[str] = None
-    roles: List[str] = Field(default_factory=list)  # ["admin", "vendor", "customer"]
-    status: Optional[str] = "pending"  # (pending/active/blocked)
+    roles: List[str] = Field(default_factory=lambda: ["vendor"])
+    status: Optional[str] = "pending"
     otp: Optional[str] = None
     otp_expires_at: Optional[str] = None
     bio: Optional[str] = None
-    avatar_urls: List[str] = Field(default_factory=list)
-    phones: List[str] = Field(default_factory=list)
+    avatar_urls: Optional[List[str]] = Field(default_factory=list)  # تغییر به Optional
+    phones: Optional[List[str]] = Field(default_factory=list)      # تغییر به Optional
     birthdate: Optional[str] = None
     gender: Optional[str] = None
-    languages: List[str] = Field(default_factory=list)
-    created_at: str
-    updated_at: str
+    languages: Optional[List[str]] = Field(default_factory=list)   # تغییر به Optional
+    created_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())  # تغییر به str
+    updated_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())  # تغییر به str

@@ -1,34 +1,71 @@
-vendor_type_defs = """
-    type Vendor {
-        id: ID!
-        username: String!
-        name: String!
-        owner_name: String!
-        owner_phone: String!
-        address: String!
-        location: Location!
-        city: String!
-        province: String!
-        logo_urls: [String!]
-        banner_urls: [String!]
-        bios: [String!]
-        about_us: [String!]
-        branches: [Branch!]
-        business_details: [BusinessDetail!]
-        visibility: Boolean!
-        attached_vendors: [ID!]
-        blocked_vendors: [ID!]
-        account_types: [String!]
-        status: String!
-        vendor_type: String!
-        social_links: [SocialLink!]
-        messenger_links: [MessengerLink!]
-        followers_count: Int!
-        following_count: Int!
-        business_category_ids: [ID!]!
-        created_by: ID!
-        created_at: String!
-        updated_by: ID
-        updated_at: String
-    }
-"""
+from pydantic.v1 import BaseModel, Field
+from typing import List, Optional
+from datetime import datetime
+
+class Location(BaseModel):
+    lat: float
+    lng: float
+
+class Branch(BaseModel):
+    label: str
+    city: str
+    province: str
+    address: str
+    location: Location
+    phones: List[str]
+    emails: List[str]
+
+class BusinessDetail(BaseModel):
+    type: str
+    values: List[str]
+
+class SocialLink(BaseModel):
+    platform: str
+    url: str
+
+class MessengerLink(BaseModel):
+    platform: str
+    url: str
+
+class VendorCreate(BaseModel):
+    username: str
+    name: str
+    owner_name: str
+    owner_phone: str
+    address: str
+    location: Location
+    city: str
+    province: str
+    business_category_ids: List[str]
+
+class VendorResponse(BaseModel):
+    id: str
+    username: str
+    name: str
+    owner_name: str
+    owner_phone: str
+    address: str
+    location: Location
+    city: str
+    province: str
+    logo_urls: List[str]
+    banner_urls: List[str]
+    bios: List[str]
+    about_us: List[str]
+    branches: List[Branch]
+    business_details: List[BusinessDetail]
+    visibility: bool
+    attached_vendors: List[str]
+    blocked_vendors: List[str]
+    account_types: List[str]
+    status: str
+    vendor_type: str
+    social_links: List[SocialLink]
+    messenger_links: List[MessengerLink]
+    followers_count: int
+    following_count: int
+    business_category_ids: List[str]
+    created_by: str
+    created_at: datetime
+    updated_by: Optional[str]
+    updated_at: datetime

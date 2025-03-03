@@ -1,8 +1,8 @@
 from pymongo import MongoClient
+from config import config
 
-MONGO_URI = "mongodb://localhost:27017/"
-client = MongoClient(MONGO_URI)
-db = client["senama_db"]
+client = MongoClient(config.MONGO_URI)
+db = client.get_default_database()
 
 def get_db():
     return db
