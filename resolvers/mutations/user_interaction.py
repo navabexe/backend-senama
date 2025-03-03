@@ -1,9 +1,10 @@
+from datetime import datetime, UTC
 from ariadne import MutationType
 from db import get_db
 from models.user_interaction import UserInteraction
-from datetime import datetime, UTC
 
 mutation = MutationType()
+
 
 @mutation.field("trackInteraction")
 async def resolve_track_interaction(_, info, targetType, targetId, action):

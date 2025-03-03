@@ -1,8 +1,8 @@
 from ariadne import QueryType
 from db import get_db
-from bson import ObjectId
 
 query = QueryType()
+
 
 @query.field("businessCategories")
 async def resolve_business_categories(_, info):

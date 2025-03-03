@@ -1,0 +1,17 @@
+{
+  "_id": "66f1a2b3c8d9e4f2b8c7d5g1",
+  "vendor_id": "66f1a2b3c8d9e4f2b8c7d5a1",
+  "balance": 1000000,
+  "transactions": [
+    {
+      "type": "top_up",
+      "amount": 2000000,
+      "date": "2025-02-27T10:00:00Z"
+    },
+    {
+      "type": "ad_spend",
+      "amount": -500000,
+      "date": "2025-02-28T15:00:00Z"
+    }
+  ]
+}

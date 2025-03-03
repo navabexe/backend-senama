@@ -1,18 +1,17 @@
-from ariadne import gql
+from typing import Optional
+from pydantic.v1 import BaseModel
 
-category_type_defs = gql("""
-    type Category {
-        id: ID!
-        name: String!
-        created_at: String!
-        updated_at: String!
-    }
 
-    type Subcategory {
-        id: ID!
-        category_id: ID!
-        name: String!
-        created_at: String!
-        updated_at: String!
-    }
-""")
+class CategoryCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+
+class CategoryResponse(BaseModel):
+    id: str
+    name: str
+    description: Optional[str]
+    created_by: str
+    created_at: str
+    updated_by: Optional[str]
+    updated_at: str

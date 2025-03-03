@@ -1,33 +1,39 @@
-from pydantic.v1 import BaseModel, Field
 from typing import List, Optional
-from datetime import datetime
+from pydantic.v1 import BaseModel
+
 
 class Price(BaseModel):
     type: str
     amount: float
     currency: str
 
+
 class Color(BaseModel):
     name: str
     hex: str
+
 
 class Image(BaseModel):
     url: str
     related_colors: List[str]
     textures: List[str]
 
+
 class AudioFile(BaseModel):
     url: str
     label: str
+
 
 class Spec(BaseModel):
     key: str
     value: str
 
+
 class ProductCreate(BaseModel):
     vendor_id: str
     name: str
     category_ids: List[str]
+
 
 class ProductResponse(BaseModel):
     id: str
@@ -48,6 +54,6 @@ class ProductResponse(BaseModel):
     category_ids: List[str]
     subcategory_ids: List[str]
     created_by: str
-    created_at: datetime
+    created_at: str
     updated_by: str
-    updated_at: datetime
+    updated_at: str

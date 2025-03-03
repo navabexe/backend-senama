@@ -1,10 +1,12 @@
-from pydantic.v1 import BaseModel, Field
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+from pydantic.v1 import BaseModel
+
 
 class Location(BaseModel):
     lat: float
     lng: float
+
 
 class Branch(BaseModel):
     label: str
@@ -15,17 +17,21 @@ class Branch(BaseModel):
     phones: List[str]
     emails: List[str]
 
+
 class BusinessDetail(BaseModel):
     type: str
     values: List[str]
+
 
 class SocialLink(BaseModel):
     platform: str
     url: str
 
+
 class MessengerLink(BaseModel):
     platform: str
     url: str
+
 
 class VendorCreate(BaseModel):
     username: str
@@ -37,6 +43,7 @@ class VendorCreate(BaseModel):
     city: str
     province: str
     business_category_ids: List[str]
+
 
 class VendorResponse(BaseModel):
     id: str

@@ -1,9 +1,11 @@
+from datetime import datetime, UTC
+
 from ariadne import MutationType
+from bson import ObjectId
+
+from core.utils import json_serialize
 from db import get_db
 from models.story import Story
-from datetime import datetime, UTC
-from bson import ObjectId
-from utils import json_serialize
 
 mutation = MutationType()
 
@@ -12,12 +14,12 @@ mutation = MutationType()
 async def resolve_create_story(_, info, vendorId, mediaUrl):
     db = get_db()
     vendor = db.vendors.find_one(
-        {"_id": ObjectId(vendorId)})  # vendorId به ObjectId تبدیل می‌شه چون _id توی vendors اینجوریه
+        {"_id": ObjectId(vendorId)})
     if not vendor:
         raise ValueError(f"Vendor with ID {vendorId} not found")
 
     story = Story(
-        vendor_id=vendorId,  # اینجا به صورت رشته ذخیره می‌شه
+        vendor_id=vendorId,
         media_url=mediaUrl,
         created_at=datetime.now(UTC).isoformat(),
         updated_at=datetime.now(UTC).isoformat()

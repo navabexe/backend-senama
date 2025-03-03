@@ -1,0 +1,18 @@
+{
+  "_id": "66f1a2b3c8d9e4f2b8c7d590",
+  "first_name": "سارا",
+  "last_name": "احمدی",
+  "bio": "طراح و تولیدکننده مبلمان با ۱۰ سال تجربه",
+  "avatar_urls": [
+    "https://example.com/avatar-sara.jpg"
+  ],
+  "phones": [
+    "09123456789"
+  ],
+  "birthdate": "1985-03-15",
+  "gender": "female",
+  "languages": [
+    "فارسی",
+    "انگلیسی"
+  ]
+}

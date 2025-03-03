@@ -1,9 +1,12 @@
+from datetime import datetime, UTC
+from typing import List, Optional
 from pydantic.v1 import BaseModel, Field
-from typing import List, Optional, Dict
+
 
 class Location(BaseModel):
     lat: float
     lng: float
+
 
 class Branch(BaseModel):
     label: str
@@ -14,17 +17,21 @@ class Branch(BaseModel):
     phones: List[str]
     emails: List[str]
 
+
 class BusinessDetail(BaseModel):
     type: str
     values: List[str]
+
 
 class SocialLink(BaseModel):
     platform: str
     url: str
 
+
 class MessengerLink(BaseModel):
     platform: str
     url: str
+
 
 class Vendor(BaseModel):
     id: Optional[str] = None
@@ -54,6 +61,6 @@ class Vendor(BaseModel):
     following_count: int = 0
     business_category_ids: List[str]
     created_by: str
-    created_at: str
+    created_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())
     updated_by: Optional[str] = None
-    updated_at: Optional[str] = None
+    updated_at: str = Field(default_factory=lambda: datetime.now(UTC).isoformat())

@@ -1,5 +1,6 @@
-from pydantic.v1 import BaseModel, Field
 from typing import Optional
+from pydantic.v1 import BaseModel
+
 
 class BusinessCategory(BaseModel):
     id: Optional[str] = None

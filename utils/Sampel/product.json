@@ -1,0 +1,75 @@
+{
+  "_id": "66f1a2b3c8d9e4f2b8c7d5b1",
+  "vendor_id": "66f1a2b3c8d9e4f2b8c7d5a1",
+  "names": [
+    "مبل راحتی ۸ نفره"
+  ],
+  "short_descriptions": [
+    "مبل مدرن با طراحی ارگونومیک"
+  ],
+  "prices": [
+    {
+      "type": "استاندارد",
+      "amount": 20000000,
+      "currency": "تومان"
+    }
+  ],
+  "colors": [
+    {
+      "name": "قهوه‌ای",
+      "hex": "#8B4513"
+    },
+    {
+      "name": "خاکستری",
+      "hex": "#808080"
+    }
+  ],
+  "images": [
+    {
+      "url": "https://example.com/mobl1.jpg",
+      "related_colors": [
+        "قهوه‌ای"
+      ],
+      "textures": [
+        "مخمل"
+      ]
+    }
+  ],
+  "video_urls": [
+    "https://example.com/mobl-video1.mp4"
+  ],
+  "audio_files": [
+    {
+      "url": "https://example.com/mobl-audio1.mp3",
+      "label": "توضیحات طراحی"
+    }
+  ],
+  "technical_specs": [
+    {
+      "key": "size",
+      "value": "۲ متر × ۱ متر"
+    }
+  ],
+  "tags": [
+    "مدرن",
+    "راحتی"
+  ],
+  "thumbnail_urls": [
+    "https://example.com/mobl1.jpg"
+  ],
+  "suggested_products": [
+    "66f1a2b3c8d9e4f2b8c7d5b2"
+  ],
+  "status": "published",
+  "qr_code_url": "https://example.com/product/66f1a2b3c8d9e4f2b8c7d5b1/qr",
+  "category_ids": [
+    "cat1"
+  ],
+  "subcategory_ids": [
+    "subcat1"
+  ],
+  "created_by": "66f1a2b3c8d9e4f2b8c7d590",
+  "created_at": "2025-02-28T10:00:00Z",
+  "updated_by": "66f1a2b3c8d9e4f2b8c7d590",
+  "updated_at": "2025-02-28T12:00:00Z"
+}

@@ -3,6 +3,7 @@ from db import get_db
 
 query = QueryType()
 
+
 @query.field("interactions")
 async def resolve_interactions(_, info, userId):
     db = get_db()

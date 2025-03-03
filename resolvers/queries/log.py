@@ -3,6 +3,7 @@ from db import get_db
 
 query = QueryType()
 
+
 @query.field("logs")
 async def resolve_logs(_, info, modelType, modelId):
     db = get_db()

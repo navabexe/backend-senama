@@ -1,6 +1,7 @@
-from services.user import get_user_profile
-from utils import get_current_user
+from core.auth import get_current_user
 from db import get_db
+from services.user.profile import get_user_profile
+
 
 async def resolve_user_profile(_, info):
     db = get_db()

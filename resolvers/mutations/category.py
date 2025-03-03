@@ -1,43 +1,49 @@
 from ariadne import MutationType
 from db import get_db
-from models.category import Category, Subcategory
-from datetime import datetime, UTC
-from bson import ObjectId
+from schemas.category import CategoryCreate
+from services.category.crud import create_category, update_category, delete_category
+from core.auth import get_current_user
+from app.exceptions import CustomAPIError
 
 mutation = MutationType()
 
 
 @mutation.field("createCategory")
-async def resolve_create_category(_, info, name):
-    db = get_db()
-    category = Category(
-        name=name,
-        created_at=datetime.now(UTC).isoformat(),
-        updated_at=datetime.now(UTC).isoformat()
-    )
-    result = db.categories.insert_one(category.dict())
-    category_id = str(result.inserted_id)
-    category.id = category_id
-    return category.__dict__
-
-
-@mutation.field("createSubcategory")
-async def resolve_create_subcategory(_, info, categoryId, name):
-    db = get_db()
+async def resolve_create_category(_, info, name, description=None):
     try:
-        category_id_obj = ObjectId(categoryId)
-        if not db.categories.find_one({"_id": category_id_obj}):
-            raise ValueError(f"Category with ID {categoryId} not found")
-    except ValueError:
-        raise ValueError(f"Invalid categoryId format: {categoryId}")
+        db = get_db()
+        user_id = get_current_user(info, db)
+        category_data = CategoryCreate(name=name, description=description)
+        result = await create_category(user_id, category_data)
+        if result is None:
+            raise ValueError("Category creation result cannot be null")
+        return result
+    except CustomAPIError as e:
+        raise
+    except Exception as e:
+        raise Exception(f"Unexpected error in creating category: {str(e)}")
 
-    subcategory = Subcategory(
-        category_id=categoryId,
-        name=name,
-        created_at=datetime.now(UTC).isoformat(),
-        updated_at=datetime.now(UTC).isoformat()
-    )
-    result = db.subcategories.insert_one(subcategory.dict())
-    subcategory_id = str(result.inserted_id)
-    subcategory.id = subcategory_id
-    return subcategory.__dict__
+
+@mutation.field("updateCategory")
+async def resolve_update_category(_, info, categoryId, name=None, description=None):
+    try:
+        user_id = get_current_user(info, get_db())
+        update_data = {"name": name, "description": description}
+        result = update_category(user_id, categoryId, update_data)
+        return result
+    except CustomAPIError as e:
+        raise
+    except Exception as e:
+        raise Exception(f"Unexpected error in updating category: {str(e)}")
+
+
+@mutation.field("deleteCategory")
+async def resolve_delete_category(_, info, categoryId):
+    try:
+        user_id = get_current_user(info, get_db())
+        result = delete_category(user_id, categoryId)
+        return result
+    except CustomAPIError as e:
+        raise
+    except Exception as e:
+        raise Exception(f"Unexpected error in deleting category: {str(e)}")

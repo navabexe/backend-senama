@@ -1,6 +1,7 @@
-from pydantic.v1 import BaseModel, Field
 from typing import List, Optional
-from datetime import datetime
+
+from pydantic.v1 import BaseModel, Field
+
 
 class UserCreate(BaseModel):
     phone: str
@@ -15,6 +16,7 @@ class UserCreate(BaseModel):
     gender: Optional[str] = None
     languages: Optional[List[str]] = Field(default_factory=list)
 
+
 class UserResponse(BaseModel):
     id: str
     phone: str
@@ -24,9 +26,9 @@ class UserResponse(BaseModel):
     status: str
     bio: Optional[str] = None
     avatar_urls: Optional[List[str]] = Field(default_factory=list)  # تغییر به Optional
-    phones: Optional[List[str]] = Field(default_factory=list)      # تغییر به Optional
+    phones: Optional[List[str]] = Field(default_factory=list)  # تغییر به Optional
     birthdate: Optional[str] = None
     gender: Optional[str] = None
-    languages: Optional[List[str]] = Field(default_factory=list)   # تغییر به Optional
+    languages: Optional[List[str]] = Field(default_factory=list)  # تغییر به Optional
     created_at: str
     updated_at: str

@@ -6,6 +6,16 @@ type_defs = gql(
     user_type_defs +
     product_type_defs +
     """
+    type Category {
+        id: ID!
+        name: String!
+        description: String
+        created_by: ID!
+        created_at: String!
+        updated_by: ID
+        updated_at: String
+    }
+
     type Session {
         id: ID!
         user_id: ID!
@@ -18,7 +28,7 @@ type_defs = gql(
         myVendorProfile: Vendor
         vendorProfile(vendorId: ID!): Vendor
         products(vendorId: ID!): [Product!]
-        searchVendors(username: String, name: String, city: String, province: String, businessCategoryId: ID): [Vendor!]
+        searchVendors(username: String, name: String, city: String, province: String, businessCategoryId: ID, limit: Int = 10, offset: Int = 0): [Vendor!]
         userProfile: User!
     }
 
@@ -33,6 +43,11 @@ type_defs = gql(
         deleteVendor(vendorId: ID!): Vendor
         activateVendor(vendorId: ID!, vendorType: String): ActivationPayload!
         createProduct(vendorId: ID!, name: String!, categoryIds: [ID!]!): Product!
+        updateProduct(productId: ID!, name: String, categoryIds: [ID!]): Product!
+        deleteProduct(productId: ID!): Product
+        createCategory(name: String!, description: String): Category!
+        updateCategory(categoryId: ID!, name: String, description: String): Category!
+        deleteCategory(categoryId: ID!): Category
     }
 
     type UserCreationPayload {

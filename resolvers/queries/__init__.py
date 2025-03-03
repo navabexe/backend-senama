@@ -1,7 +1,7 @@
 from ariadne import QueryType
-from .vendor import resolve_my_vendor_profile, resolve_vendor_profile, resolve_search_vendors
 from .product import resolve_products
 from .user import resolve_user_profile
+from .vendor import resolve_my_vendor_profile, resolve_vendor_profile, resolve_search_vendors
 
 query = QueryType()
 

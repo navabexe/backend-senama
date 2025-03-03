@@ -1,11 +1,10 @@
+from datetime import datetime, UTC
 from ariadne import MutationType
 from db import get_db
 from models.business_category import BusinessCategory
-from datetime import datetime, UTC
-from bson import ObjectId
-from utils import json_serialize
 
 mutation = MutationType()
+
 
 @mutation.field("createBusinessCategory")
 async def resolve_create_business_category(_, info, name):

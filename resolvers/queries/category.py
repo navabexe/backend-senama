@@ -1,15 +1,15 @@
 from ariadne import QueryType
-from db import get_db
 from bson import ObjectId
+from db import get_db
 
 query = QueryType()
+
 
 @query.field("categories")
 async def resolve_categories(_, info):
     db = get_db()
     try:
         categories = list(db.categories.find())
-        print("Categories from DB:", categories)  # برای دیباگ
         result = []
         for category in categories:
             category_dict = {
@@ -19,11 +19,10 @@ async def resolve_categories(_, info):
                 "updated_at": category.get("updated_at", "")
             }
             result.append(category_dict)
-        print("Categories result:", result)  # برای دیباگ
-        return result  # همیشه یه لیست برمی‌گردونیم
-    except Exception as e:
-        print(f"Error fetching categories: {str(e)}")  # برای دیباگ
-        return []  # در صورت خطا، لیست خالی برمی‌گردونیم
+        return result
+    except Exception:
+        return []
+
 
 @query.field("subcategories")
 async def resolve_subcategories(_, info, categoryId):

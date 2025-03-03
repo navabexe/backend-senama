@@ -1,11 +1,12 @@
+from datetime import datetime, UTC
 from ariadne import MutationType
+from bson import ObjectId
+from core.utils import json_serialize
 from db import get_db
 from models.follow_block import FollowBlock
-from datetime import datetime, UTC
-from bson import ObjectId
-from utils import json_serialize
 
 mutation = MutationType()
+
 
 @mutation.field("createFollowBlock")
 async def resolve_create_follow_block(_, info, followerId, followingId, action):
@@ -39,7 +40,8 @@ async def resolve_create_follow_block(_, info, followerId, followingId, action):
     follow_block.id = follow_block_id
 
     if action == "follow":
-        db.vendors.update_one({"_id": follower_id_obj}, {"$inc": {"following_count": 1}, "$push": {"attached_vendors": followingId}})
+        db.vendors.update_one({"_id": follower_id_obj},
+                              {"$inc": {"following_count": 1}, "$push": {"attached_vendors": followingId}})
         db.vendors.update_one({"_id": following_id_obj}, {"$inc": {"followers_count": 1}})
     elif action == "block":
         db.vendors.update_one({"_id": follower_id_obj}, {"$push": {"blocked_vendors": followingId}})
@@ -61,6 +63,7 @@ async def resolve_create_follow_block(_, info, followerId, followingId, action):
     follow_block_dict["id"] = follow_block_id
     return follow_block_dict
 
+
 @mutation.field("deleteFollowBlock")
 async def resolve_delete_follow_block(_, info, followBlockId):
     db = get_db()
@@ -78,7 +81,8 @@ async def resolve_delete_follow_block(_, info, followBlockId):
     follower_id_obj = ObjectId(follow_block["follower_id"])
     following_id_obj = ObjectId(follow_block["following_id"])
     if follow_block["action"] == "follow":
-        db.vendors.update_one({"_id": follower_id_obj}, {"$inc": {"following_count": -1}, "$pull": {"attached_vendors": follow_block["following_id"]}})
+        db.vendors.update_one({"_id": follower_id_obj}, {"$inc": {"following_count": -1},
+                                                         "$pull": {"attached_vendors": follow_block["following_id"]}})
         db.vendors.update_one({"_id": following_id_obj}, {"$inc": {"followers_count": -1}})
     elif follow_block["action"] == "block":
         db.vendors.update_one({"_id": follower_id_obj}, {"$pull": {"blocked_vendors": follow_block["following_id"]}})
